@@ -1,0 +1,7 @@
+name: VentusShops
+version: ${project.version}
+main: com.pyropoops.ventusshops.VentusShops
+api-version: 1.15.2
+prefix: VentusShops
+authors: [pyropoops]
+website: blakwurm.com
