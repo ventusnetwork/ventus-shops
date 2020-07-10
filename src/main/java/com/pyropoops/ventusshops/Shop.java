@@ -83,7 +83,8 @@ public class Shop implements Listener {
     }
 
     private Inventory createPage(int page) {
-        Inventory inventory = Bukkit.createInventory(null, this.size + 9,
+        int add = this.getMaxPageSize() > 1 ? 9 : 0;
+        Inventory inventory = Bukkit.createInventory(null, this.size + add,
                 this.display + " (" + page + "/" + this.getMaxPageSize() + ")");
         int index = this.size * (page - 1);
         for (int i = 0; i < this.size; i++) {

@@ -2,6 +2,7 @@ package com.pyropoops.ventusshops;
 
 import com.pyropoops.ventusshops.commands.ShopCommand;
 import com.pyropoops.ventusshops.config.Config;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
@@ -36,12 +37,30 @@ public final class VentusShops extends JavaPlugin {
 
     private void registerShops() {
         Set<String> shops = shopsConfig.getConfig().getKeys(false);
-        for (String shop : shops) {
-            ConfigurationSection section = shopsConfig.getConfig().getConfigurationSection(shop);
-            if(section == null) continue;
-            String item = section.getString("item");
-            if(item == null) continue;
+        for (String shopString : shops) {
+            ConfigurationSection section = shopsConfig.getConfig().getConfigurationSection(shopString);
+            if (section == null) continue;
+            Set<String> items = section.getKeys(false);
+            String display = section.getString("display");
+            int size = 45;
+            if (display == null) display = shopString;
+            if (section.contains("size")) size = section.getInt("size");
+            Shop shop = new Shop(shopString,
+                    ChatColor.translateAlternateColorCodes('&', display),
+                    size);
+            for (String s : items) {
+                ConfigurationSection itemSection = section.getConfigurationSection(s);
+                if (itemSection == null) continue;
+                if (!itemSection.contains("buy-price")
+                        || !itemSection.contains("sell-price")) continue;
+                Material material = Material.getMaterial(s);
+                if (material == null) continue;
+                double buyPrice = itemSection.getDouble("buy-price");
+                double sellPrice = itemSection.getDouble("sell-price");
 
+                shop.addItem(material, buyPrice, sellPrice);
+            }
+            shop.createInventories();
         }
     }
 
