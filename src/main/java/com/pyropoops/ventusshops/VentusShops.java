@@ -1,7 +1,11 @@
 package com.pyropoops.ventusshops;
 
+import com.pyropoops.ventusshops.commands.ShopCommand;
+import org.bukkit.command.Command;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 public final class VentusShops extends JavaPlugin {
     private static VentusShops instance;
@@ -14,8 +18,7 @@ public final class VentusShops extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        TestingShop testingShop = new TestingShop();
-        testingShop.init();
+        Objects.requireNonNull(getCommand("shop")).setExecutor(new ShopCommand());
     }
 
     @Override

@@ -6,5 +6,5 @@ prefix: VentusShops
 authors: [pyropoops]
 website: blakwurm.com
 commands:
-  test:
-    usage: /<command>
+  shop:
+    description: Shop command for Ventus
