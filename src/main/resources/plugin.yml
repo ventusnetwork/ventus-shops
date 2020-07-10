@@ -1,7 +1,10 @@
 name: VentusShops
 version: ${project.version}
 main: com.pyropoops.ventusshops.VentusShops
-api-version: 1.15.2
+api-version: 1.13
 prefix: VentusShops
 authors: [pyropoops]
 website: blakwurm.com
+commands:
+  test:
+    usage: /<command>
