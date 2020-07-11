@@ -36,7 +36,11 @@ public class Shop implements Listener {
     public void createInventories() {
         this.pages = new ArrayList<>();
         for (int i = 0; i < getMaxPageSize(); i++) {
-            this.pages.add(createPage(i + 1));
+            try {
+                this.pages.add(createPage(i + 1));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -63,36 +67,51 @@ public class Shop implements Listener {
 
         if (page == -1) return;
 
-        if (e.getSlot() < this.size) {
-            ShopItem shopItem = this.shopItems.get(e.getSlot() + (page * this.size));
-            PurchaseInventory purchaseInventory = new PurchaseInventory(shopItem, this.pages.get(page));
-            purchaseInventory.open((Player) e.getWhoClicked());
-        } else if (e.getSlot() == this.size) {
+        if (e.getSlot() == this.size - 9) {
             if (page != 0) {
                 e.getWhoClicked().openInventory(this.pages.get(page - 1));
+                return;
             }
-        } else if (e.getSlot() == this.size + 8) {
+        } else if (e.getSlot() == this.size - 1) {
             if (page != this.getMaxPageSize() - 1) {
                 e.getWhoClicked().openInventory(this.pages.get(page + 1));
+                return;
             }
         }
+        int offset = (2 * (page + 1) - 2) * -1;
+        int i = e.getSlot() + (page * this.size) + offset;
+        if(i >= this.shopItems.size()) return;
+        ShopItem shopItem = this.shopItems.get(i);
+        PurchaseInventory purchaseInventory = new PurchaseInventory(shopItem, this.pages.get(page));
+        purchaseInventory.open((Player) e.getWhoClicked());
     }
 
     private int getMaxPageSize() {
-        return (int) Math.ceil((double) this.shopItems.size() / (double) this.size);
+        int pages = (int) Math.ceil((double) this.shopItems.size() / (double) this.size);
+        int shopItems = this.shopItems.size();
+        if (this.shopItems.size() > this.size) {
+            int offset = 1 + ((pages - 1) * 2);
+            shopItems += offset;
+        }
+        return (int) Math.ceil((double) shopItems / (double) this.size);
     }
 
     private Inventory createPage(int page) {
-        int add = this.getMaxPageSize() > 1 ? 9 : 0;
         String pageNumber = this.getMaxPageSize() > 1 ?
                 " (" + page + "/" + this.getMaxPageSize() + ")" : "";
-        Inventory inventory = Bukkit.createInventory(null, this.size + add,
+        Inventory inventory = Bukkit.createInventory(null, this.size,
                 this.display + pageNumber);
         int index = this.size * (page - 1);
+        int offset = page != 1 ? 1 + (2 * (page - 1)) * -1 : 0;
         for (int i = 0; i < this.size; i++) {
-            if (i + index >= this.shopItems.size()) break;
-            ShopItem shopItem = this.shopItems.get(i + index);
-            inventory.setItem(i, shopItem.getDisplayItem());
+            if (i + offset + index >= this.shopItems.size()) break;
+            ShopItem shopItem = this.shopItems.get(i + offset + index);
+            int j = i;
+            if(page != 1 && i >= this.size - 9) {
+                j++;
+            }
+            if (j >= inventory.getSize()) continue;
+            inventory.setItem(j, shopItem.getDisplayItem());
         }
         ItemStack arrow = new ItemStack(Material.ARROW, 1);
         if (page != 1) {
@@ -100,14 +119,14 @@ public class Shop implements Listener {
             if (meta == null) return inventory;
             meta.setDisplayName("§c§lPREVIOUS PAGE");
             arrow.setItemMeta(meta);
-            inventory.setItem(this.size, arrow);
+            inventory.setItem(this.size - 9, arrow);
         }
         if (page != this.getMaxPageSize()) {
             ItemMeta meta = arrow.getItemMeta();
             if (meta == null) return inventory;
             meta.setDisplayName("§a§lNEXT PAGE");
             arrow.setItemMeta(meta);
-            inventory.setItem(this.size + 8, arrow);
+            inventory.setItem(this.size - 1, arrow);
         }
         return inventory;
     }
