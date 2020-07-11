@@ -84,8 +84,10 @@ public class Shop implements Listener {
 
     private Inventory createPage(int page) {
         int add = this.getMaxPageSize() > 1 ? 9 : 0;
+        String pageNumber = this.getMaxPageSize() > 1 ?
+                " (" + page + "/" + this.getMaxPageSize() + ")" : "";
         Inventory inventory = Bukkit.createInventory(null, this.size + add,
-                this.display + " (" + page + "/" + this.getMaxPageSize() + ")");
+                this.display + pageNumber);
         int index = this.size * (page - 1);
         for (int i = 0; i < this.size; i++) {
             if (i + index >= this.shopItems.size()) break;
@@ -95,17 +97,17 @@ public class Shop implements Listener {
         ItemStack arrow = new ItemStack(Material.ARROW, 1);
         if (page != 1) {
             ItemMeta meta = arrow.getItemMeta();
-            if(meta == null) return inventory;
+            if (meta == null) return inventory;
             meta.setDisplayName("§c§lPREVIOUS PAGE");
             arrow.setItemMeta(meta);
             inventory.setItem(this.size, arrow);
         }
         if (page != this.getMaxPageSize()) {
             ItemMeta meta = arrow.getItemMeta();
-            if(meta == null) return inventory;
+            if (meta == null) return inventory;
             meta.setDisplayName("§a§lNEXT PAGE");
             arrow.setItemMeta(meta);
-            inventory.setItem(this.size+8, arrow);
+            inventory.setItem(this.size + 8, arrow);
         }
         return inventory;
     }
