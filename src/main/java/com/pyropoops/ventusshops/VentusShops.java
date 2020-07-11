@@ -40,7 +40,9 @@ public final class VentusShops extends JavaPlugin {
         for (String shopString : shops) {
             ConfigurationSection section = shopsConfig.getConfig().getConfigurationSection(shopString);
             if (section == null) continue;
-            Set<String> items = section.getKeys(false);
+            ConfigurationSection itemsSection = section.getConfigurationSection("items");
+            if (itemsSection == null) continue;
+            Set<String> items = itemsSection.getKeys(false);
             String display = section.getString("display");
             int size = 45;
             if (display == null) display = shopString;
@@ -49,7 +51,7 @@ public final class VentusShops extends JavaPlugin {
                     ChatColor.translateAlternateColorCodes('&', display),
                     size);
             for (String s : items) {
-                ConfigurationSection itemSection = section.getConfigurationSection(s);
+                ConfigurationSection itemSection = itemsSection.getConfigurationSection(s);
                 if (itemSection == null) continue;
                 if (!itemSection.contains("buy-price")
                         || !itemSection.contains("sell-price")) continue;
