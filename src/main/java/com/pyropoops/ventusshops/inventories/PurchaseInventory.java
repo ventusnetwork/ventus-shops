@@ -99,38 +99,46 @@ public class PurchaseInventory implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (!e.getInventory().equals(this.inventory)) return;
+        if (e.getClickedInventory() == null ||
+                !e.getClickedInventory().equals(this.inventory)) return;
         e.setCancelled(true);
         switch (e.getSlot()) {
             case 36:
                 e.getWhoClicked().openInventory(this.originInventory);
                 break;
             case 44:
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             case 3:
                 new Transaction((Player) e.getWhoClicked(), this.shopItem, 1, true);
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             case 12:
                 new Transaction((Player) e.getWhoClicked(), this.shopItem, 8, true);
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             case 21:
                 new Transaction((Player) e.getWhoClicked(), this.shopItem, 64, true);
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             case 5:
                 new Transaction((Player) e.getWhoClicked(), this.shopItem, 1, false);
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             case 14:
                 new Transaction((Player) e.getWhoClicked(), this.shopItem, 8, false);
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             case 23:
                 new Transaction((Player) e.getWhoClicked(), this.shopItem, 64, false);
-                e.getWhoClicked().closeInventory();
+                if (!e.isShiftClick())
+                    e.getWhoClicked().closeInventory();
                 break;
             default:
                 break;

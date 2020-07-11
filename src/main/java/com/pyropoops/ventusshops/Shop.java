@@ -49,7 +49,7 @@ public class Shop implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         if (!e.getView().getTitle().startsWith(this.display)) return;
 
-        e.setCancelled(true);
+        if (this.pages.contains(e.getClickedInventory())) e.setCancelled(true);
 
         int page = -1;
         for (int i = 0; i < this.pages.size(); i++) {
