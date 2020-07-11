@@ -48,7 +48,7 @@ public class Transaction {
     }
 
     private boolean inventoryHasSpace(Inventory inventory, ItemStack itemStack) {
-        for (ItemStack i : inventory.getContents()) {
+        for (ItemStack i : inventory.getStorageContents()) {
             if (i == null) return true;
             if (i.getType() == Material.AIR) return true;
             if (i.getType() == itemStack.getType()) {
@@ -69,7 +69,9 @@ public class Transaction {
         }
         this.economy.withdrawPlayer(player, this.shopItem.getBuyPrice() * this.amount);
         this.player.getInventory().addItem(this.itemStack);
-        player.sendMessage("§aTransaction successful!");
+        player.sendMessage("§aYou bought " + this.amount + " "
+                + this.shopItem.getMaterial().name().toLowerCase() + " for $"
+                + this.shopItem.getBuyPrice() * this.amount);
     }
 
     private void sell() {
@@ -78,8 +80,28 @@ public class Transaction {
             return;
         }
         this.economy.depositPlayer(player, this.shopItem.getSellPrice() * this.amount);
-        this.player.getInventory().remove(this.itemStack);
-        player.sendMessage("§aTransaction successful!");
+        this.removeItems(player, this.itemStack);
+        player.sendMessage("§aYou sold " + this.amount + " "
+                + this.shopItem.getMaterial().name().toLowerCase() + " for $" +
+                this.amount * this.shopItem.getSellPrice());
+    }
+
+    private void removeItems(Player player, ItemStack itemStack) {
+        int count = 0;
+        for (ItemStack i : player.getInventory().getStorageContents()) {
+            if (i == null) continue;
+            if (i.getType().equals(itemStack.getType())) {
+                int stackSize = i.getAmount();
+                if (count + stackSize <= itemStack.getAmount()) {
+                    player.getInventory().remove(i);
+                    count += stackSize;
+                } else {
+                    int remove = itemStack.getAmount() - count;
+                    i.setAmount(i.getAmount() - remove);
+                    return;
+                }
+            }
+        }
     }
 
     private void execute() {
