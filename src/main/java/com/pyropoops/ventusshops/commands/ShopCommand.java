@@ -1,6 +1,7 @@
 package com.pyropoops.ventusshops.commands;
 
 import com.pyropoops.ventusshops.Shop;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,10 +22,16 @@ public class ShopCommand implements CommandExecutor {
             sender.sendMessage("§cI could not find a shop with that name!");
             return true;
         }
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cYou must be a player to do this!");
+        Player player = null;
+        if (args.length >= 2) {
+            player = Bukkit.getPlayer(args[1]);
+        } else if (!(sender instanceof Player)) {
+            sender.sendMessage("You must be a player to do this!");
             return true;
+        } else {
+            player = (Player) sender;
         }
+        if (player == null) return true;
         Shop shop = Shop.shops.get(args[0]);
         shop.open((Player) sender);
         return true;
