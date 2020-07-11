@@ -33,7 +33,7 @@ public class ShopCommand implements CommandExecutor {
         }
         if (player == null) return true;
         Shop shop = Shop.shops.get(args[0]);
-        shop.open((Player) sender);
+        shop.open(player);
         return true;
     }
 }
