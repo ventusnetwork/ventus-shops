@@ -59,7 +59,7 @@ public class Transaction {
     }
 
     private void buy() {
-        if (!this.economy.has(player, this.shopItem.getBuyPrice())) {
+        if (!this.economy.has(player, this.shopItem.getBuyPrice() * this.amount)) {
             player.sendMessage("§cYou do not have enough money for that!");
             return;
         }
