@@ -1,6 +1,7 @@
 package com.pyropoops.ventusshops;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -90,16 +91,11 @@ public class Transaction {
         int count = 0;
         for (ItemStack i : player.getInventory().getStorageContents()) {
             if (i == null) continue;
+            if (count >= amount) return;
             if (i.getType().equals(itemStack.getType())) {
-                int stackSize = i.getAmount();
-                if (count + stackSize <= itemStack.getAmount()) {
-                    player.getInventory().remove(i);
-                    count += stackSize;
-                } else {
-                    int remove = itemStack.getAmount() - count;
-                    i.setAmount(i.getAmount() - remove);
-                    return;
-                }
+                int remove = Math.max(amount - count, 0);
+                i.setAmount(i.getAmount() - remove);
+                count += remove;
             }
         }
     }
